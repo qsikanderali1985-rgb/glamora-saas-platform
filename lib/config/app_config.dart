@@ -183,15 +183,9 @@ class AppConfig {
   // ==================== HELPER METHODS ====================
   
   /// Print current configuration (for debugging)
+  /// Note: Debug output disabled to avoid production warnings
   static void printConfig() {
-    if (!enableLogging) return;
-
-    print('=== GLAMORA APP CONFIGURATION ===');
-    print('Environment: $environment');
-    print('API Base URL: $apiBaseUrl');
-    print('SaaS Mode: $useSaaSBackend');
-    print('Multi-Tenant: $isMultiTenant');
-    print('Local Fallback: $useLocalFallback');
-    print('=================================');
+    // Configuration logging disabled in production build
+    // Enable this in debug mode if needed for troubleshooting
   }
 }
