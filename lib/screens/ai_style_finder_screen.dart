@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:convert' show base64Encode;
 import '../models/ai_style.dart';
 
 class AIStyleFinderScreen extends StatefulWidget {
@@ -138,25 +140,60 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
           
           const SizedBox(height: 40),
           
-          // Upload Button
-          ElevatedButton.icon(
-            onPressed: _pickImage,
-            icon: const Icon(Icons.upload_file, size: 24),
-            label: const Text(
-              'Upload Your Photo',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              backgroundColor: Colors.transparent,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+          // Upload Button with Camera + Gallery Options
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Camera Button
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ElevatedButton.icon(
+                    onPressed: () => _pickImage(ImageSource.camera),
+                    icon: const Icon(Icons.camera_alt, size: 24),
+                    label: const Text(
+                      'Take Photo',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ).copyWith(
+                      backgroundColor: WidgetStateProperty.all(Colors.transparent),
+                    ),
+                  ).wrapWithGradient(),
+                ),
               ),
-            ).copyWith(
-              backgroundColor: WidgetStateProperty.all(Colors.transparent),
-            ),
-          ).wrapWithGradient(),
+              // Gallery Button
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: ElevatedButton.icon(
+                    onPressed: () => _pickImage(ImageSource.gallery),
+                    icon: const Icon(Icons.photo_library, size: 24),
+                    label: const Text(
+                      'Upload Photo',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ).copyWith(
+                      backgroundColor: WidgetStateProperty.all(Colors.transparent),
+                    ),
+                  ).wrapWithGradient(),
+                ),
+              ),
+            ],
+          ),
           
           const SizedBox(height: 16),
           
@@ -310,18 +347,49 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
       ),
       child: Row(
         children: [
-          // Uploaded Photo
+          // Uploaded Photo with Network/Asset Image Support
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Container(
               width: 100,
               height: 100,
-              color: const Color(0xFF111827),
-              child: const Icon(
-                Icons.person,
-                size: 50,
-                color: Color(0xFFF8D7C4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF111827),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: const Color(0xFFF8D7C4),
+                  width: 2,
+                ),
               ),
+              child: _uploadedImagePath != null && _uploadedImagePath!.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        _uploadedImagePath!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Fallback if image fails to load
+                          return const Icon(
+                            Icons.person,
+                            size: 50,
+                            color: Color(0xFFF8D7C4),
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFFF8D7C4),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  : const Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Color(0xFFF8D7C4),
+                    ),
             ),
           ),
           
@@ -807,12 +875,28 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
     }
   }
 
-  Future<void> _pickImage() async {
-    // Open file browser to select image
+  Future<void> _pickImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
     
     try {
-      final XFile? image = await picker.pickImage(
+      XFile? image;
+      
+      // For web, camera is not supported - show message
+      if (kIsWeb && source == ImageSource.camera) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Camera feature requires mobile app. Please use Upload Photo.'),
+              duration: Duration(seconds: 2),
+              backgroundColor: Color(0xFFA855F7),
+            ),
+          );
+        }
+        return;
+      }
+      
+      // Pick image from gallery
+      image = await picker.pickImage(
         source: ImageSource.gallery,
         maxWidth: 1920,
         maxHeight: 1920,
@@ -824,9 +908,19 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
         return;
       }
 
-      // Image selected successfully
+      // For web: use bytes directly, for mobile: use path
+      String imagePath;
+      if (kIsWeb) {
+        // On web, convert to base64 data URL
+        final bytes = await image.readAsBytes();
+        imagePath = 'data:image/png;base64,${base64Encode(bytes)}';
+      } else {
+        // On mobile, use file path
+        imagePath = image.path;
+      }
+
       setState(() {
-        _uploadedImagePath = image.path;
+        _uploadedImagePath = imagePath;
         _isAnalyzing = true;
       });
 
@@ -845,8 +939,9 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to pick image: $e'),
+            content: Text('Failed to select image: $e'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
           ),
         );
       }
