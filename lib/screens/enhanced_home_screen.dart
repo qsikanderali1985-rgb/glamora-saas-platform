@@ -661,6 +661,225 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
     ),
   ];
 
+  // Premium Deals & Promotions - 15 Active Offers
+  final List<DealPackage> _activeDeals = [
+    // Islamabad Deals
+    DealPackage(
+      id: 'deal_1',
+      providerId: '1',
+      title: 'Bridal Glam Package',
+      description: 'Complete Bridal Makeup + Hair Styling + Mehndi',
+      originalPrice: 35000,
+      discountedPrice: 24999,
+      includedServices: ['HD Bridal Makeup', 'Hair Styling', 'Mehndi Design', 'Saree Draping'],
+      validUntil: DateTime.now().add(const Duration(days: 15)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 50,
+      currentBookings: 23,
+    ),
+    DealPackage(
+      id: 'deal_2',
+      providerId: '2',
+      title: 'Couple Spa Retreat',
+      description: '90min Massage + Sauna + Refreshments for 2',
+      originalPrice: 8500,
+      discountedPrice: 5999,
+      includedServices: ['Swedish Massage', 'Hot Stone Therapy', 'Sauna Session', 'Herbal Tea'],
+      validUntil: DateTime.now().add(const Duration(days: 30)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 30,
+      currentBookings: 18,
+    ),
+    DealPackage(
+      id: 'deal_3',
+      providerId: '3',
+      title: 'Gentleman Grooming Pack',
+      description: 'Haircut + Beard Styling + Face Massage',
+      originalPrice: 2500,
+      discountedPrice: 1499,
+      includedServices: ['Premium Haircut', 'Beard Trim & Style', 'Face Massage', 'Hair Wash'],
+      validUntil: DateTime.now().add(const Duration(days: 7)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 100,
+      currentBookings: 67,
+    ),
+    DealPackage(
+      id: 'deal_4',
+      providerId: '5',
+      title: 'Wedding Season Special',
+      description: 'Bridal + 2 Bridesmaids Makeup Package',
+      originalPrice: 48000,
+      discountedPrice: 34999,
+      includedServices: ['Bride HD Makeup', '2 Bridesmaid Makeup', 'Hair Styling (All)', 'Jewelry Setting'],
+      validUntil: DateTime.now().add(const Duration(days: 20)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 25,
+      currentBookings: 9,
+    ),
+    DealPackage(
+      id: 'deal_5',
+      providerId: '8',
+      title: 'VIP Spa Day',
+      description: 'Full Day Spa Experience with Lunch',
+      originalPrice: 12000,
+      discountedPrice: 7999,
+      includedServices: ['Body Massage', 'Facial', 'Body Scrub', 'Jacuzzi', 'Healthy Lunch'],
+      validUntil: DateTime.now().add(const Duration(days: 45)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 20,
+      currentBookings: 5,
+    ),
+
+    // Lahore Deals
+    DealPackage(
+      id: 'deal_6',
+      providerId: '11',
+      title: 'Party Glam Trio',
+      description: 'Party Makeup + Hair + Nails - 3 Friends',
+      originalPrice: 18000,
+      discountedPrice: 12999,
+      includedServices: ['Party Makeup (3)', 'Hair Styling (3)', 'Gel Nails (3)'],
+      validUntil: DateTime.now().add(const Duration(days: 10)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 40,
+      currentBookings: 22,
+    ),
+    DealPackage(
+      id: 'deal_7',
+      providerId: '12',
+      title: 'Luxury Spa Escape',
+      description: 'Thai Massage + Body Scrub + Facial',
+      originalPrice: 6500,
+      discountedPrice: 4299,
+      includedServices: ['Thai Massage 60min', 'Body Scrub', 'Deep Cleansing Facial'],
+      validUntil: DateTime.now().add(const Duration(days: 25)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 35,
+      currentBookings: 15,
+    ),
+    DealPackage(
+      id: 'deal_8',
+      providerId: '13',
+      title: 'Premium Shave Package',
+      description: 'Royal Shave + Haircut + Head Massage',
+      originalPrice: 3000,
+      discountedPrice: 1899,
+      includedServices: ['Traditional Royal Shave', 'Haircut', 'Head & Face Massage', 'Styling'],
+      validUntil: DateTime.now().add(const Duration(days: 14)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 80,
+      currentBookings: 54,
+    ),
+    DealPackage(
+      id: 'deal_9',
+      providerId: '15',
+      title: 'Engagement Makeup Deal',
+      description: 'Complete Engagement Makeup Package',
+      originalPrice: 25000,
+      discountedPrice: 17999,
+      includedServices: ['Engagement Makeup', 'Hair Styling', 'Jewelry Setting', 'Dupatta Draping'],
+      validUntil: DateTime.now().add(const Duration(days: 18)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 30,
+      currentBookings: 12,
+    ),
+    DealPackage(
+      id: 'deal_10',
+      providerId: '17',
+      title: 'Wellness Wednesday',
+      description: 'Midweek Spa Special - 30% Off',
+      originalPrice: 5000,
+      discountedPrice: 3499,
+      includedServices: ['Body Massage', 'Aromatherapy', 'Foot Spa'],
+      validUntil: DateTime.now().add(const Duration(days: 7)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 60,
+      currentBookings: 41,
+    ),
+
+    // Karachi Deals
+    DealPackage(
+      id: 'deal_11',
+      providerId: '21',
+      title: 'Bridal Bliss Package',
+      description: 'Ultimate Bridal Transformation',
+      originalPrice: 42000,
+      discountedPrice: 29999,
+      includedServices: ['Airbrush Makeup', 'Professional Hair Styling', 'Nail Art', 'Makeup Touch-ups'],
+      validUntil: DateTime.now().add(const Duration(days: 22)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 20,
+      currentBookings: 7,
+    ),
+    DealPackage(
+      id: 'deal_12',
+      providerId: '22',
+      title: 'Ocean Spa Signature',
+      description: 'Premium Spa Day with Couples Massage',
+      originalPrice: 10000,
+      discountedPrice: 6999,
+      includedServices: ['Hot Stone Massage (2)', 'Steam Bath', 'Sauna', 'Light Refreshments'],
+      validUntil: DateTime.now().add(const Duration(days: 35)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 25,
+      currentBookings: 11,
+    ),
+    DealPackage(
+      id: 'deal_13',
+      providerId: '23',
+      title: 'Haircut & Style Combo',
+      description: 'Modern Haircut + Beard Design',
+      originalPrice: 2200,
+      discountedPrice: 1399,
+      includedServices: ['Fade Haircut', 'Beard Design/Art', 'Hair Wash', 'Styling Wax'],
+      validUntil: DateTime.now().add(const Duration(days: 12)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 90,
+      currentBookings: 63,
+    ),
+    DealPackage(
+      id: 'deal_14',
+      providerId: '24',
+      title: 'Mani-Pedi Pamper',
+      description: 'Gel Nails + Spa Pedicure',
+      originalPrice: 3500,
+      discountedPrice: 2199,
+      includedServices: ['Gel Manicure', 'Spa Pedicure', 'Nail Art (Basic)', 'Hand Massage'],
+      validUntil: DateTime.now().add(const Duration(days: 16)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 50,
+      currentBookings: 28,
+    ),
+    DealPackage(
+      id: 'deal_15',
+      providerId: '27',
+      title: 'Serenity Sunday Special',
+      description: 'Weekend Relaxation Package',
+      originalPrice: 7500,
+      discountedPrice: 4999,
+      includedServices: ['Full Body Massage', 'Facial Treatment', 'Body Polish', 'Herbal Tea'],
+      validUntil: DateTime.now().add(const Duration(days: 9)),
+      isActive: true,
+      imageUrl: '',
+      maxBookings: 40,
+      currentBookings: 19,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -945,73 +1164,245 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
 
   Widget _buildOffersSection() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // AI Style Finder Card with Advanced Animation
-          _AIStyleFinderCard(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: _AIStyleFinderCard(),
+          ),
+          
+          const SizedBox(height: 20),
+          
+          // Active Promotions Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '🔥 Active Promotions',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${_activeDeals.length} Special Deals Available',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.local_offer, size: 18),
+                  label: const Text('View All'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFFF8D7C4),
+                  ),
+                ),
+              ],
+            ),
+          ),
           
           const SizedBox(height: 12),
           
-          // Offers Banner
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
-              ),
-              borderRadius: BorderRadius.circular(16),
+          // Scrollable Deals Carousel
+          SizedBox(
+            height: 220,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _activeDeals.length,
+              itemBuilder: (context, index) => _buildDealCard(_activeDeals[index]),
             ),
-            child: Stack(
-              children: [
-                Positioned(
-                  right: 20,
-                  bottom: 10,
-                  child: Text(
-                    '✨',
-                    style: TextStyle(
-                      fontSize: 80,
-                      color: Colors.white.withValues(alpha: 0.3),
-                    ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDealCard(DealPackage deal) {
+    final provider = _nearbyProviders.firstWhere(
+      (p) => p.id == deal.providerId,
+      orElse: () => _nearbyProviders.first,
+    );
+    final daysLeft = deal.validUntil.difference(DateTime.now()).inDays;
+    
+    return Container(
+      width: 300,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.12),
+            Colors.white.withValues(alpha: 0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFA855F7).withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Deal Header with Discount Badge
+          Stack(
+            children: [
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xFFF8D7C4).withValues(alpha: 0.4),
+                      const Color(0xFFA855F7).withValues(alpha: 0.4),
+                    ],
                   ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
+                child: Center(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        '🎉 Special Offers',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                      Icon(
+                        Icons.local_offer,
+                        size: 40,
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Get 30% OFF on first booking',
-                        style: TextStyle(
-                          fontSize: 16,
+                      const SizedBox(height: 4),
+                      Text(
+                        provider.name,
+                        style: const TextStyle(
+                          fontSize: 12,
                           color: Colors.white,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: const Text('View Deals'),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
+                ),
+              ),
+              // Discount Percentage Badge
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFF6B6B), Color(0xFFFF5252)],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFF5252).withValues(alpha: 0.5),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    '${deal.discountPercentage.toInt()}% OFF',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          
+          // Deal Content
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  deal.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  deal.description,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withValues(alpha: 0.7),
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text(
+                      'Rs ${deal.originalPrice.toInt()}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white.withValues(alpha: 0.5),
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Rs ${deal.discountedPrice.toInt()}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFF8D7C4),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 14,
+                      color: daysLeft <= 7 ? Colors.red : const Color(0xFFA855F7),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$daysLeft days left',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: daysLeft <= 7 ? Colors.red : Colors.white.withValues(alpha: 0.7),
+                        fontWeight: daysLeft <= 7 ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '${deal.currentBookings}/${deal.maxBookings} booked',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.white.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
