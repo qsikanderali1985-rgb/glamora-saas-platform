@@ -5,6 +5,7 @@ class AIStyleRecommendation {
   final String styleName;
   final String description;
   final String imageUrl;
+  final String? transformedImageUrl; // AI-generated image with style applied
   final double matchScore; // 0-100
   final List<String> features;
   final String difficulty; // easy, medium, hard
@@ -17,12 +18,20 @@ class AIStyleRecommendation {
     required this.styleName,
     required this.description,
     required this.imageUrl,
+    this.transformedImageUrl,
     required this.matchScore,
     required this.features,
     required this.difficulty,
     required this.estimatedTime,
     required this.estimatedPrice,
   });
+
+  // Generate mock transformed image URL (In production, this would be AI-generated)
+  String getTransformedImage(String originalPhotoUrl) {
+    // Simulate AI transformation by returning a data URL with style overlay
+    // In real app, this would call ML API to generate actual transformation
+    return transformedImageUrl ?? originalPhotoUrl;
+  }
 }
 
 // Face Analysis Result
