@@ -1,0 +1,36 @@
+{
+    "name": "Glamora - Beauty & Wellness",
+    "short_name": "Glamora",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#050509",
+    "theme_color": "#F8D7C4",
+    "description": "Premium beauty salon booking app with AI-powered style recommendations. Book haircuts, makeup, spa, bridal services and more.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "categories": ["lifestyle", "beauty", "wellness"],
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
