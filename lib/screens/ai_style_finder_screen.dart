@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../models/ai_style.dart';
 
 class AIStyleFinderScreen extends StatefulWidget {
@@ -806,21 +807,50 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
     }
   }
 
-  void _pickImage() {
-    // Simulate image picker
-    setState(() {
-      _uploadedImagePath = 'mock_path.jpg';
-      _isAnalyzing = true;
-    });
+  Future<void> _pickImage() async {
+    // Open file browser to select image
+    final ImagePicker picker = ImagePicker();
+    
+    try {
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1920,
+        maxHeight: 1920,
+        imageQuality: 85,
+      );
 
-    // Simulate AI processing
-    Future.delayed(const Duration(seconds: 3), () {
+      if (image == null) {
+        // User cancelled the picker
+        return;
+      }
+
+      // Image selected successfully
       setState(() {
-        _isAnalyzing = false;
-        _analysisResult = FaceAnalysisResult.analyze(_uploadedImagePath!);
-        _recommendations = _analysisResult!.getRecommendations();
+        _uploadedImagePath = image.path;
+        _isAnalyzing = true;
       });
-    });
+
+      // Simulate AI processing
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() {
+            _isAnalyzing = false;
+            _analysisResult = FaceAnalysisResult.analyze(_uploadedImagePath!);
+            _recommendations = _analysisResult!.getRecommendations();
+          });
+        }
+      });
+    } catch (e) {
+      // Handle error
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to pick image: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _retakePhoto() {
