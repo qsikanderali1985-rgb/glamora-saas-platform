@@ -581,56 +581,114 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
       ),
       child: Column(
         children: [
-          // Image placeholder
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF111827).withValues(alpha: 0.8),
-                  const Color(0xFF111827).withValues(alpha: 0.6),
-                ],
-              ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            ),
-            child: Stack(
-              children: [
-                Center(
-                  child: Icon(
-                    _getCategoryIcon(style.category),
-                    size: 60,
-                    color: const Color(0xFFF8D7C4).withValues(alpha: 0.5),
-                  ),
+          // Style Preview Image - Shows user photo with style applied
+          GestureDetector(
+            onTap: () => _showStylePreview(style),
+            child: Container(
+              height: 200,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF111827).withValues(alpha: 0.8),
+                    const Color(0xFF111827).withValues(alpha: 0.6),
+                  ],
                 ),
-                // Match Score Badge
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              child: Stack(
+                children: [
+                  // User's uploaded photo as background
+                  if (_uploadedImagePath != null && _uploadedImagePath!.isNotEmpty)
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        child: Image.network(
+                          _uploadedImagePath!,
+                          fit: BoxFit.cover,
+                          opacity: const AlwaysStoppedAnimation(0.4),
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              _getCategoryIcon(style.category),
+                              size: 60,
+                              color: const Color(0xFFF8D7C4).withValues(alpha: 0.5),
+                            );
+                          },
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Row(
+                  // Style overlay effect
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          const Color(0xFF111827).withValues(alpha: 0.7),
+                        ],
+                      ),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                  ),
+                  // Preview hint
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.star, size: 14, color: Colors.white),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${style.matchScore.toInt()}%',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        Icon(
+                          Icons.visibility,
+                          size: 40,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFA855F7).withValues(alpha: 0.8),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            'Tap to Preview Style',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  // Match Score Badge
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.star, size: 14, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${style.matchScore.toInt()}%',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           
@@ -975,6 +1033,271 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
       SnackBar(
         content: Text('${_selectedStyles.length} style(s) added to your booking!'),
         backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  // Show full-screen style preview with visual transformation
+  void _showStylePreview(AIStyleRecommendation style) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.9),
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF111827),
+                const Color(0xFF1F2937),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: const Color(0xFFF8D7C4).withValues(alpha: 0.3),
+              width: 2,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            style.styleName,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'AI Style Preview',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close, color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Before/After Comparison
+              Container(
+                height: 400,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFFA855F7).withValues(alpha: 0.5),
+                    width: 2,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    // User's photo with style overlay
+                    if (_uploadedImagePath != null && _uploadedImagePath!.isNotEmpty)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.network(
+                          _uploadedImagePath!,
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Icon(
+                                Icons.person,
+                                size: 100,
+                                color: Colors.white.withValues(alpha: 0.3),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    
+                    // Style transformation overlay
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            const Color(0xFFA855F7).withValues(alpha: 0.3),
+                          ],
+                        ),
+                      ),
+                    ),
+                    
+                    // Style info overlay
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.8),
+                            ],
+                          ),
+                          borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(14),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.auto_awesome,
+                                  color: Color(0xFFF8D7C4),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Preview with ${style.styleName}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              style.description,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white.withValues(alpha: 0.8),
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    
+                    // Match badge
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFA855F7).withValues(alpha: 0.5),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.star, size: 16, color: Colors.white),
+                            const SizedBox(width: 6),
+                            Text(
+                              '${style.matchScore.toInt()}% Match',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Action buttons
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
+                        label: const Text('Close'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white54),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            if (!_selectedStyles.contains(style)) {
+                              _selectedStyles.add(style);
+                            }
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${style.styleName} added!'),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.check_circle),
+                        label: const Text('Select Style'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFA855F7),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
       ),
     );
   }
