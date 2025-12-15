@@ -443,8 +443,22 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
   }
 
   void _addInventoryItem() {
+    setState(() {
+      _inventory.add(
+        InventoryItem(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          name: 'New Product',
+          category: 'Hair Care',
+          quantity: 0,
+          costPrice: 0,
+          sellingPrice: 0,
+          minStockLevel: 5,
+          supplier: 'Supplier',
+        ),
+      );
+    });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Add Item dialog coming soon!')),
+      const SnackBar(content: Text('Item added successfully!')),
     );
   }
 

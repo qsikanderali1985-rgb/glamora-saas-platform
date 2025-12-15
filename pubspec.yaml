@@ -51,6 +51,15 @@ dependencies:
   
   # HTTP client for API communication
   http: ^1.2.0
+  
+  # Google Gemini AI for real image analysis and style recommendations
+  google_generative_ai: ^0.4.0
+  
+  # URL Launcher to open Google Gemini in browser
+  url_launcher: ^6.2.5
+  
+  # Charts for admin revenue analytics
+  fl_chart: ^0.66.0
 
 dev_dependencies:
   flutter_test:

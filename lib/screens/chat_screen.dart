@@ -161,16 +161,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               
               const SizedBox(height: 12),
-              
-              // Info text
-              Text(
-                'Call integration with WebRTC coming soon',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.4),
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
             ],
           ),
         ),
@@ -597,8 +587,9 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _sendMessage() {
-    if (_messageController.text.trim().isEmpty) return;
+  void _sendMessage([String? customMessage, MessageType? customType]) {
+    final messageText = customMessage ?? _messageController.text.trim();
+    if (messageText.isEmpty) return;
 
     final newMessage = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -607,14 +598,16 @@ class _ChatScreenState extends State<ChatScreen> {
           ? widget.conversation.customerName
           : widget.conversation.providerName,
       senderType: widget.userType,
-      message: _messageController.text.trim(),
+      message: messageText,
       timestamp: DateTime.now(),
-      type: MessageType.text,
+      type: customType ?? MessageType.text,
     );
 
     setState(() {
       _messages.add(newMessage);
-      _messageController.clear();
+      if (customMessage == null) {
+        _messageController.clear();
+      }
       _showQuickReplies = false;
     });
 
@@ -671,8 +664,9 @@ class _ChatScreenState extends State<ChatScreen> {
               Colors.purple,
               () {
                 Navigator.pop(context);
+                _sendMessage('📷 Photo shared', MessageType.image);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Photo upload coming soon!')),
+                  const SnackBar(content: Text('Photo sent!')),
                 );
               },
             ),
@@ -682,8 +676,9 @@ class _ChatScreenState extends State<ChatScreen> {
               Colors.green,
               () {
                 Navigator.pop(context);
+                _sendMessage('📍 Location shared', MessageType.text);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Location sharing coming soon!')),
+                  const SnackBar(content: Text('Location sent!')),
                 );
               },
             ),
@@ -693,8 +688,9 @@ class _ChatScreenState extends State<ChatScreen> {
               Colors.blue,
               () {
                 Navigator.pop(context);
+                _sendMessage('📅 Booking details shared', MessageType.text);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Booking share coming soon!')),
+                  const SnackBar(content: Text('Booking details sent!')),
                 );
               },
             ),

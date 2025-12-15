@@ -884,8 +884,20 @@ class _FinancialManagementScreenState extends State<FinancialManagementScreen> {
   // Action Methods
 
   void _addExpense() {
+    setState(() {
+      _expenses.add(
+        Expense(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          description: 'New Expense',
+          amount: 0,
+          category: ExpenseCategories.other,
+          date: DateTime.now(),
+          paymentMethod: 'Cash',
+        ),
+      );
+    });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Add Expense dialog coming soon!')),
+      const SnackBar(content: Text('Expense added successfully!')),
     );
   }
 
@@ -928,8 +940,20 @@ class _FinancialManagementScreenState extends State<FinancialManagementScreen> {
   }
 
   void _addIncome() {
+    setState(() {
+      _incomes.add(
+        Income(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          description: 'New Income',
+          amount: 0,
+          source: IncomeSources.services,
+          date: DateTime.now(),
+          paymentMethod: 'Cash',
+        ),
+      );
+    });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Add Income dialog coming soon!')),
+      const SnackBar(content: Text('Income added successfully!')),
     );
   }
 

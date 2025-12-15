@@ -5,6 +5,7 @@ import '../models/chat.dart';
 import '../widgets/animated_icon_wrapper.dart';
 import 'booking_flow_screen.dart';
 import 'ai_style_finder_screen.dart';
+import 'gemini_ai_generator_screen.dart';
 import 'chat_screen.dart';
 import 'reviews_list_screen.dart';
 
@@ -16,11 +17,16 @@ class EnhancedHomeScreen extends StatefulWidget {
 }
 
 class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
-  final String _selectedLocation = 'Current Location';
+  String _selectedCity = 'Islamabad'; // Default city
   String? _selectedCategory;
   String _sortBy = 'recommended'; // recommended, distance, rating, price
   bool _openNowOnly = false;
+  bool _homeServiceOnly = false;
+  bool _offersOnly = false;
   final TextEditingController _searchController = TextEditingController();
+  
+  // Available Cities
+  final List<String> _cities = ['Islamabad', 'Lahore', 'Karachi'];
   
   // Professional Demo Data - 30 Premium Salons across Pakistan
   final List<ServiceProvider> _nearbyProviders = [
@@ -912,16 +918,35 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Nearby Services',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Services in',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                          ),
+                        ),
+                        Text(
+                          _selectedCity,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          '${_filteredProviders.length} services available',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFFA855F7),
+                          ),
+                        ),
+                      ],
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: _showAllProviders,
                       child: const Text('See All'),
                     ),
                   ],
@@ -932,8 +957,8 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
             // Provider Cards
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) => _buildProviderCard(_nearbyProviders[index]),
-                childCount: _nearbyProviders.length,
+                (context, index) => _buildProviderCard(_filteredProviders[index]),
+                childCount: _filteredProviders.length,
               ),
             ),
           ],
@@ -958,23 +983,27 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
           const SizedBox(width: 8),
           Expanded(
             child: GestureDetector(
-              onTap: () {
-                // Show location picker
-              },
+              onTap: _showCityPicker,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Deliver to',
+                    'Select City',
                     style: TextStyle(fontSize: 12, color: Colors.white70),
                   ),
-                  Text(
-                    _selectedLocation,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        _selectedCity,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.arrow_drop_down, color: Colors.white70, size: 20),
+                    ],
                   ),
                 ],
               ),
@@ -987,7 +1016,7 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
               size: 22,
               enableGlow: true,
             ),
-            onPressed: () {},
+            onPressed: _showNotifications,
           ),
         ],
       ),
@@ -1066,13 +1095,23 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
                 _buildFilterChip(
                   'Home Service',
                   Icons.home_outlined,
-                  () {},
+                  () {
+                    setState(() {
+                      _homeServiceOnly = !_homeServiceOnly;
+                    });
+                  },
+                  isSelected: _homeServiceOnly,
                 ),
                 const SizedBox(width: 8),
                 _buildFilterChip(
                   'Offers',
                   Icons.local_offer,
-                  () {},
+                  () {
+                    setState(() {
+                      _offersOnly = !_offersOnly;
+                    });
+                  },
+                  isSelected: _offersOnly,
                 ),
               ],
             ),
@@ -1168,10 +1207,18 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // AI Style Finder Card with Advanced Animation
+          // AI Features Section - FREE Gemini & PREMIUM AI Finder
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: _AIStyleFinderCard(),
+            child: Column(
+              children: [
+                // FREE: Google Gemini AI Generator
+                _buildGeminiAICard(),
+                const SizedBox(height: 12),
+                // PREMIUM: AI Style Finder (Ready to Connect)
+                _buildPremiumAIFinderCard(),
+              ],
+            ),
           ),
           
           const SizedBox(height: 20),
@@ -1204,7 +1251,7 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
                   ],
                 ),
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: _showAllDeals,
                   icon: const Icon(Icons.local_offer, size: 18),
                   label: const Text('View All'),
                   style: TextButton.styleFrom(
@@ -1217,9 +1264,9 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
           
           const SizedBox(height: 12),
           
-          // Scrollable Deals Carousel
+          // Scrollable Deals Carousel (FIX OVERFLOW)
           SizedBox(
-            height: 220,
+            height: 240,  // Increased from 220 to fix overflow
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1239,24 +1286,26 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
     );
     final daysLeft = deal.validUntil.difference(DateTime.now()).inDays;
     
-    return Container(
-      width: 300,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withValues(alpha: 0.12),
-            Colors.white.withValues(alpha: 0.05),
-          ],
+    return GestureDetector(
+      onTap: () => _showDealDetails(deal, provider),
+      child: Container(
+        width: 300,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withValues(alpha: 0.12),
+              Colors.white.withValues(alpha: 0.05),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: const Color(0xFFA855F7).withValues(alpha: 0.3),
+            width: 1.5,
+          ),
         ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFA855F7).withValues(alpha: 0.3),
-          width: 1.5,
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1329,9 +1378,9 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
             ],
           ),
           
-          // Deal Content
+          // Deal Content (REDUCE SPACING TO FIX OVERFLOW)
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),  // Reduced from 12
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1345,7 +1394,7 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),  // Reduced from 6
                 Text(
                   deal.description,
                   style: TextStyle(
@@ -1355,7 +1404,7 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),  // Reduced from 8
                 Row(
                   children: [
                     Text(
@@ -1377,7 +1426,7 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),  // Reduced from 8
                 Row(
                   children: [
                     Icon(
@@ -1409,6 +1458,7 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -1686,6 +1736,23 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
                       ),
                     ],
                   ),
+                  
+                  const SizedBox(height: 10),
+                  
+                  // Get Directions Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _openGoogleMaps(provider),
+                      icon: const Icon(Icons.directions, size: 18),
+                      label: Text('Get Directions to ${provider.address}'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFFA855F7),
+                        side: const BorderSide(color: Color(0xFFA855F7)),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -1841,10 +1908,831 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> {
     );
   }
 
+  // Show Notifications Panel
+  void _showNotifications() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF111827),
+              const Color(0xFF1F2937),
+            ],
+          ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.notifications, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Notifications',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              children: [
+                _buildNotificationItem(icon: Icons.local_offer, title: 'Special Offer!', message: 'Get 30% OFF on your first booking', time: '2 hours ago', isNew: true),
+                _buildNotificationItem(icon: Icons.check_circle, title: 'Booking Confirmed', message: 'Your appointment at Glow Beauty Salon', time: '1 day ago', isNew: false),
+                _buildNotificationItem(icon: Icons.auto_awesome, title: 'AI Style Ready!', message: 'Your personalized style recommendations are ready', time: '2 days ago', isNew: false),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationItem({required IconData icon, required String title, required String message, required String time, required bool isNew}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isNew ? const Color(0xFFA855F7).withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: isNew ? const Color(0xFFA855F7).withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: const Color(0xFFF8D7C4).withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
+            child: Icon(icon, color: const Color(0xFFF8D7C4), size: 24),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white))),
+                    if (isNew) Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(8)), child: const Text('NEW', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white))),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(message, style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7))),
+                const SizedBox(height: 4),
+                Text(time, style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5))),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAllProviders() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Showing all ${_nearbyProviders.length} service providers'),
+        backgroundColor: const Color(0xFFA855F7),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showAllDeals() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Showing all ${_activeDeals.length} promotional deals'),
+        backgroundColor: const Color(0xFFA855F7),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  // Show Deal Details Dialog
+  void _showDealDetails(DealPackage deal, ServiceProvider provider) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                const Color(0xFF111827),
+                const Color(0xFF1F2937),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: const Color(0xFFA855F7).withValues(alpha: 0.5),
+              width: 2,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xFFF8D7C4).withValues(alpha: 0.3),
+                      const Color(0xFFA855F7).withValues(alpha: 0.3),
+                    ],
+                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFFF6B6B), Color(0xFFFF5252)],
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFFF5252).withValues(alpha: 0.5),
+                                blurRadius: 12,
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            '${deal.discountPercentage.toInt()}% OFF',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                deal.title,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                provider.name,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFFF8D7C4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Deal Details
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Price
+                    Row(
+                      children: [
+                        Text(
+                          'Rs ${deal.originalPrice.toInt()}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withValues(alpha: 0.5),
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Rs ${deal.discountedPrice.toInt()}',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFF8D7C4),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Save Rs ${(deal.originalPrice - deal.discountedPrice).toInt()}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 20),
+                    
+                    // Description
+                    Text(
+                      deal.description,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withValues(alpha: 0.9),
+                        height: 1.5,
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Included Services
+                    const Text(
+                      'Included Services:',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...deal.includedServices.map((service) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            color: Color(0xFFA855F7),
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            service,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.white.withValues(alpha: 0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Stats
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Color(0xFFA855F7),
+                                  size: 20,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${deal.validUntil.difference(DateTime.now()).inDays} days left',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  Icons.people,
+                                  color: Color(0xFFA855F7),
+                                  size: 20,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${deal.currentBookings}/${deal.maxBookings} booked',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    
+                    // Action Buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.close),
+                            label: const Text('Close'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          flex: 2,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => BookingFlowScreen(provider: provider),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.shopping_bag),
+                            label: const Text('Avail This Deal'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFA855F7),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // City Picker Dialog
+  void _showCityPicker() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                const Color(0xFF111827),
+                const Color(0xFF1F2937),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.location_city, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Select Your City',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ..._cities.map((city) => _buildCityOption(city)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCityOption(String city) {
+    final isSelected = _selectedCity == city;
+    // Count providers in this city
+    final providerCount = _nearbyProviders.where((p) => p.address.contains(city)).length;
+    
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedCity = city;
+        });
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Showing $providerCount services in $city'),
+            backgroundColor: const Color(0xFFA855F7),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? const LinearGradient(
+                  colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
+                )
+              : LinearGradient(
+                  colors: [
+                    Colors.white.withValues(alpha: 0.1),
+                    Colors.white.withValues(alpha: 0.05),
+                  ],
+                ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? Colors.transparent
+                : Colors.white.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.location_city,
+              color: isSelected ? Colors.white : const Color(0xFFF8D7C4),
+              size: 24,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    city,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '$providerCount services available',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isSelected
+                          ? Colors.white.withValues(alpha: 0.9)
+                          : Colors.white.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              const Icon(Icons.check_circle, color: Colors.white, size: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Open Google Maps with directions
+  void _openGoogleMaps(ServiceProvider provider) {
+    final url = 'https://www.google.com/maps/dir/?api=1&destination=${provider.latitude},${provider.longitude}';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Opening Google Maps...',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Destination: ${provider.address}',
+              style: const TextStyle(fontSize: 12),
+            ),
+            Text(
+              'Distance: ${provider.distance} km',
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFFA855F7),
+        duration: const Duration(seconds: 4),
+        action: SnackBarAction(
+          label: 'OPEN',
+          textColor: Colors.white,
+          onPressed: () {
+            // In a real app, use url_launcher package
+            // For demo, just log the URL
+            debugPrint('Opening: $url');
+          },
+        ),
+      ),
+    );
+  }
+
+  // Get filtered providers based on selected city
+  List<ServiceProvider> get _filteredProviders {
+    return _nearbyProviders.where((provider) {
+      // City filter
+      if (!provider.address.contains(_selectedCity)) {
+        return false;
+      }
+      
+      // Category filter
+      if (_selectedCategory != null && !provider.services.any((s) => s.toLowerCase().contains(_selectedCategory!.toLowerCase()))) {
+        return false;
+      }
+      
+      // Open now filter
+      if (_openNowOnly && !provider.isOpen) {
+        return false;
+      }
+      
+      // Home service filter
+      if (_homeServiceOnly && !provider.hasHomeService) {
+        return false;
+      }
+      
+      return true;
+    }).toList();
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+  
+  // NEW: FREE Gemini AI Generator Card
+  Widget _buildGeminiAICard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const GeminiAIGeneratorScreen(),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF4285F4), Color(0xFF34A853), Color(0xFFFBBC05), Color(0xFFEA4335)],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF4285F4).withValues(alpha: 0.5),
+              blurRadius: 20,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.auto_awesome,
+                color: Colors.white,
+                size: 32,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Google Gemini AI Generator',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'FREE - No API Costs',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Generate hairstyle, makeup & color images',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.white,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  // NEW: PREMIUM AI Style Finder Card (Ready to Connect)
+  Widget _buildPremiumAIFinderCard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const AIStyleFinderScreen(),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFFFFA500).withValues(alpha: 0.3),
+              const Color(0xFFFFD700).withValues(alpha: 0.3),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: const Color(0xFFFFD700).withValues(alpha: 0.5),
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+              blurRadius: 20,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFA500), Color(0xFFFFD700)],
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.stars,
+                color: Colors.white,
+                size: 32,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Premium AI Style Finder',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFFFA500), Color(0xFFFFD700)],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'READY TO ACTIVATE',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Instant AI transformations - just add API key',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: Color(0xFFFFD700),
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

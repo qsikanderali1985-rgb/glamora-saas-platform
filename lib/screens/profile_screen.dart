@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../role_selection_screen.dart';
+import 'notifications_settings_screen.dart';
+import 'language_settings_screen.dart';
+import 'payment_methods_screen.dart';
+import 'saved_addresses_screen.dart';
+import 'help_support_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -135,8 +140,10 @@ class ProfileScreen extends StatelessWidget {
               title: 'Notifications',
               subtitle: 'Manage notification preferences',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Notifications settings coming soon!')),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationsSettingsScreen(),
+                  ),
                 );
               },
             ),
@@ -146,8 +153,10 @@ class ProfileScreen extends StatelessWidget {
               title: 'Language',
               subtitle: 'English',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Language selection coming soon!')),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const LanguageSettingsScreen(),
+                  ),
                 );
               },
             ),
@@ -157,8 +166,10 @@ class ProfileScreen extends StatelessWidget {
               title: 'Saved Addresses',
               subtitle: 'Manage delivery addresses',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Address management coming soon!')),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SavedAddressesScreen(),
+                  ),
                 );
               },
             ),
@@ -168,8 +179,10 @@ class ProfileScreen extends StatelessWidget {
               title: 'Payment Methods',
               subtitle: 'Add or manage payment options',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Payment settings coming soon!')),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentMethodsScreen(),
+                  ),
                 );
               },
             ),
@@ -191,8 +204,10 @@ class ProfileScreen extends StatelessWidget {
               title: 'Help & Support',
               subtitle: 'Get help with your account',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Help center coming soon!')),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const HelpSupportScreen(),
+                  ),
                 );
               },
             ),

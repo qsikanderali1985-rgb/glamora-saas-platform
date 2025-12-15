@@ -8,6 +8,7 @@ import 'widgets/glamora_logo.dart';
 import 'main.dart';
 import 'screens/customer_registration_screen.dart';
 import 'screens/provider_registration_screen.dart';
+import 'screens/admin_dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final UserRole selectedRole;
@@ -39,12 +40,26 @@ class _LoginScreenState extends State<LoginScreen> {
     if (rememberMe && savedRole != null && FirebaseAuth.instance.currentUser != null) {
       // User is already logged in, navigate to home with saved role
       if (mounted) {
-        final role = savedRole == 'customer' ? UserRole.customer : UserRole.serviceProvider;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => GlamoraHomeShell(userRole: role),
-          ),
-        );
+        final role = savedRole == 'customer'
+            ? UserRole.customer
+            : savedRole == 'admin'
+                ? UserRole.admin
+                : UserRole.serviceProvider;
+        
+        // Admin goes to dashboard, others go to home shell
+        if (role == UserRole.admin) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const AdminDashboardScreen(),
+            ),
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => GlamoraHomeShell(userRole: role),
+            ),
+          );
+        }
       }
     } else {
       setState(() {
@@ -85,14 +100,21 @@ class _LoginScreenState extends State<LoginScreen> {
       // Save remember me preference and selected role
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('remember_me', _rememberMe);
-      await prefs.setString('user_role', widget.selectedRole == UserRole.customer ? 'customer' : 'serviceProvider');
+      await prefs.setString('user_role', widget.selectedRole == UserRole.customer ? 'customer' : widget.selectedRole == UserRole.admin ? 'admin' : 'serviceProvider');
       
       // Check if registration is complete
       final isRegistrationComplete = prefs.getBool('registration_complete') ?? false;
       
       // Navigate to registration or home
       if (mounted) {
-        if (isRegistrationComplete) {
+        // Admin goes directly to dashboard (no registration needed)
+        if (widget.selectedRole == UserRole.admin) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const AdminDashboardScreen(),
+            ),
+          );
+        } else if (isRegistrationComplete) {
           // Already registered, go to home
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
@@ -153,7 +175,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               widget.selectedRole == UserRole.customer
                   ? 'Sign in to book beauty services'
-                  : 'Sign in to manage your salon',
+                  : widget.selectedRole == UserRole.admin
+                      ? 'Sign in as Admin'
+                      : 'Sign in to manage your salon',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
@@ -161,7 +185,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               widget.selectedRole == UserRole.customer
                   ? 'Discover beauty. Book smarter. Earn rewards.'
-                  : 'Manage bookings, staff & grow your business.',
+                  : widget.selectedRole == UserRole.admin
+                      ? 'Manage users, providers & analytics.'
+                      : 'Manage bookings, staff & grow your business.',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 13, color: Colors.white70),
             ),

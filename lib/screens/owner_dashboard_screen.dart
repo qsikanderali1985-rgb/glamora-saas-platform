@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'financial_management_screen.dart';
 import 'inventory_management_screen.dart';
 import 'payroll_management_screen.dart';
+import 'add_staff_screen.dart';
+import 'promotions_screen.dart';
+import 'provider_reports_screen.dart';
 
 class OwnerDashboardScreen extends StatefulWidget {
   const OwnerDashboardScreen({super.key});
@@ -480,8 +483,10 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   Icons.person_add,
                   const Color(0xFFA855F7),
                   () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Add Staff coming soon!')),
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddStaffScreen(),
+                      ),
                     );
                   },
                 ),
@@ -497,8 +502,10 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   Icons.local_offer,
                   Colors.green,
                   () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Promotions coming soon!')),
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PromotionsScreen(),
+                      ),
                     );
                   },
                 ),
@@ -510,8 +517,10 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   Icons.assessment,
                   Colors.blue,
                   () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Reports coming soon!')),
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ProviderReportsScreen(),
+                      ),
                     );
                   },
                 ),

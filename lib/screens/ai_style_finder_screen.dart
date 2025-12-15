@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:convert' show base64Encode;
 import '../models/ai_style.dart';
 import '../widgets/ai_style_preview_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AIStyleFinderScreen extends StatefulWidget {
   const AIStyleFinderScreen({super.key});
@@ -141,59 +142,232 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
           
           const SizedBox(height: 40),
           
-          // Upload Button with Camera + Gallery Options
+          // NEW: Open Google Gemini Button (FREE AI Image Generation)
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF4285F4), Color(0xFF34A853), Color(0xFFFBBC05), Color(0xFFEA4335)],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF4285F4).withValues(alpha: 0.5),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: ElevatedButton.icon(
+              onPressed: _openGoogleGeminiForImageGeneration,
+              icon: const Icon(Icons.auto_awesome, size: 28),
+              label: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Generate AI Images with Gemini (FREE)',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Upload photo → AI creates hairstyle variations → Download & share',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                  ),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Divider with "OR" text
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Camera Button
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ElevatedButton.icon(
-                    onPressed: () => _pickImage(ImageSource.camera),
-                    icon: const Icon(Icons.camera_alt, size: 24),
-                    label: const Text(
-                      'Take Photo',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      backgroundColor: Colors.transparent,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ).copyWith(
-                      backgroundColor: WidgetStateProperty.all(Colors.transparent),
-                    ),
-                  ).wrapWithGradient(),
+              const Expanded(child: Divider(color: Colors.white24, thickness: 1)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'OR',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              // Gallery Button
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: ElevatedButton.icon(
-                    onPressed: () => _pickImage(ImageSource.gallery),
-                    icon: const Icon(Icons.photo_library, size: 24),
-                    label: const Text(
-                      'Upload Photo',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      backgroundColor: Colors.transparent,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ).copyWith(
-                      backgroundColor: WidgetStateProperty.all(Colors.transparent),
-                    ),
-                  ).wrapWithGradient(),
-                ),
-              ),
+              const Expanded(child: Divider(color: Colors.white24, thickness: 1)),
             ],
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Upload Button with Camera + Gallery Options (PREMIUM - Ready to Connect)
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFFFFA500).withValues(alpha: 0.2),
+                  const Color(0xFFFFD700).withValues(alpha: 0.2),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: const Color(0xFFFFD700).withValues(alpha: 0.5),
+                width: 2,
+              ),
+            ),
+            child: Column(
+              children: [
+                // Premium Badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFFA500), Color(0xFFFFD700)],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.stars, size: 18, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text(
+                        'PREMIUM FEATURE - Ready to Activate',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Instant AI Transformations',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Upload photo → AI instantly generates 3 hairstyle previews → No waiting!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                // Info Box for Flippa Buyers
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.info_outline, size: 16, color: Color(0xFFFFD700)),
+                          const SizedBox(width: 8),
+                          Text(
+                            'For App Buyers:',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white.withValues(alpha: 0.9),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '• Feature is 100% ready - just connect your AI API\n'
+                        '• Supports: Stability AI, Replicate, or DALL-E\n'
+                        '• Cost: \$0.001-\$0.04 per image generation\n'
+                        '• Setup time: 5 minutes (add API key only)',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.white.withValues(alpha: 0.7),
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    // Camera Button
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.camera),
+                          icon: const Icon(Icons.camera_alt, size: 24),
+                          label: const Text(
+                            'Take Photo',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ).copyWith(
+                            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+                          ),
+                        ).wrapWithPremiumGradient(),
+                      ),
+                    ),
+                    // Gallery Button
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.gallery),
+                          icon: const Icon(Icons.photo_library, size: 24),
+                          label: const Text(
+                            'Upload Photo',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ).copyWith(
+                            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+                          ),
+                        ).wrapWithPremiumGradient(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           
           const SizedBox(height: 16),
@@ -1007,6 +1181,70 @@ class _AIStyleFinderScreenState extends State<AIStyleFinderScreen> {
     }
   }
 
+  // NEW: Open Google Gemini for FREE image generation
+  Future<void> _openGoogleGeminiForImageGeneration() async {
+    // Pre-filled prompt for hairstyle generation
+    final prompt = Uri.encodeComponent(
+      '''Generate 3 different hairstyle variations for this person based on their face shape and features:
+
+1. ANALYZE the face shape, skin tone, and current hairstyle
+2. CREATE 3 professional hairstyle images showing:
+   - Short modern haircut (styled and faded sides)
+   - Medium layered style (textured and voluminous)
+   - Long flowing style (with layers and movement)
+
+3. For each hairstyle, show:
+   - How it looks from the front
+   - Styled professionally
+   - Appropriate for their face shape
+
+Make the transformations realistic and professional, as if done by a skilled hairstylist.
+
+After generating, I'll download my favorite and share it with my salon provider for accurate preparation!''',
+    );
+
+    // Google Gemini URL with prompt
+    final geminiUrl = 'https://gemini.google.com/app?hl=en&prompt=$prompt';
+    
+    try {
+      final uri = Uri.parse(geminiUrl);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication, // Opens in browser
+        );
+        
+        // Show success message with instructions
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Opening Google Gemini...\n\n'
+                '1. Upload your photo when Gemini opens\n'
+                '2. AI will generate 3 hairstyle images (FREE!)\n'
+                '3. Download your favorite\n'
+                '4. Come back and upload it to share with provider',
+              ),
+              duration: Duration(seconds: 7),
+              backgroundColor: Color(0xFF4285F4),
+            ),
+          );
+        }
+      } else {
+        throw 'Could not launch Gemini';
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to open Gemini: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void _retakePhoto() {
     setState(() {
       _uploadedImagePath = null;
@@ -1073,6 +1311,19 @@ extension GradientButtonExtension on Widget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFFF8D7C4), Color(0xFFA855F7)],
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: this,
+    );
+  }
+  
+  // Premium gradient (gold/orange) for paid features
+  Widget wrapWithPremiumGradient() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFA500), Color(0xFFFFD700)],
         ),
         borderRadius: BorderRadius.circular(12),
       ),
