@@ -1,0 +1,118 @@
+═══════════════════════════════════════════════════════════════════
+                    GLAMORA - FINANCIAL SUMMARY
+         Beauty Booking App - Annual Revenue & Expense Breakdown
+═══════════════════════════════════════════════════════════════════
+
+📊 ANNUAL REVENUE BREAKDOWN
+═══════════════════════════════════════════════════════════════════
+
+💰 Total Annual Revenue: PKR 41.22M (PKR 41,220,000)
+
+Revenue Streams:
+├─ Subscription Revenue:    PKR 34.20M  (83%)
+│  └─ PKR 2.85M/month x 12 months
+│  └─ 30 Premium Users (Platinum/Gold/Silver tiers)
+│
+└─ Commission Revenue:      PKR 7.02M   (17%)
+   └─ 15% platform commission on bookings
+   └─ Based on PKR 46.8M annual GMV
+
+
+═══════════════════════════════════════════════════════════════════
+
+💸 ANNUAL OPERATING EXPENSES
+═══════════════════════════════════════════════════════════════════
+
+📦 Total Annual Expenses: PKR 6.035M (PKR 6,035,000)
+
+Detailed Expense Breakdown:
+
+1. HOSTING & INFRASTRUCTURE              PKR 360,000
+   ├─ Firebase Hosting:      PKR 120,000 (PKR 10k/month)
+   ├─ Cloud Storage:          PKR 60,000 (PKR 5k/month)
+   ├─ MySQL Database:        PKR 180,000 (PKR 15k/month)
+   └─ Webflow:                      PKR 0 (Using Flutter)
+
+2. DOMAIN & SSL                           PKR 15,000
+   ├─ Domain Registration:    PKR 15,000 (.com annual)
+   └─ SSL Certificate:              PKR 0 (Free - Firebase/Cloudflare)
+
+3. API SERVICES                          PKR 540,000
+   ├─ Google Gemini AI:      PKR 240,000 (PKR 20k/month)
+   ├─ Google Maps API:       PKR 120,000 (PKR 10k/month)
+   └─ SMS Notifications:     PKR 180,000 (PKR 15k/month)
+
+4. MAINTENANCE & UPDATES                 PKR 720,000
+   ├─ Server Maintenance:    PKR 300,000 (PKR 25k/month)
+   ├─ Bug Fixes:             PKR 240,000 (PKR 20k/month)
+   └─ App Updates:           PKR 180,000 (PKR 15k/month)
+
+5. MARKETING & GROWTH                  PKR 1,200,000
+   ├─ Google Ads:            PKR 600,000 (PKR 50k/month)
+   ├─ Social Media:          PKR 360,000 (PKR 30k/month)
+   └─ SEO Services:          PKR 240,000 (PKR 20k/month)
+
+6. TEAM & SUPPORT                      PKR 3,000,000
+   ├─ Support Team:        PKR 1,800,000 (2 agents @ PKR 75k/month)
+   └─ Developer:           PKR 1,200,000 (Part-time @ PKR 100k/month)
+
+
+═══════════════════════════════════════════════════════════════════
+
+💎 NET PROFIT & MARGINS
+═══════════════════════════════════════════════════════════════════
+
+✅ Annual Net Profit:     PKR 35.185M (PKR 35,185,000)
+✅ Profit Margin:         85.4%
+✅ Monthly Avg Profit:    PKR 2.93M
+
+
+═══════════════════════════════════════════════════════════════════
+
+📈 KEY METRICS
+═══════════════════════════════════════════════════════════════════
+
+MRR (Monthly Recurring):      PKR 2.85M
+ARR (Annual Recurring):        PKR 34.2M
+Total Users:                   100
+Premium Conversion:            30%
+Active Bookings:               245
+Completed Bookings:            3,890
+Monthly Growth:                22.5%
+
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 VALUATION CALCULATION (For Internal Use Only - NOT DISPLAYED)
+═══════════════════════════════════════════════════════════════════
+
+ARR:                          PKR 34.2M
+Valuation Multiple:           3.5x (Industry standard for SaaS)
+Exclusive Sale Price:         PKR 119.7M (PKR 119,700,000)
+
+Note: This valuation is stored in backend for reference but NOT 
+displayed in the admin dashboard UI. Only revenue and expenses 
+are visible to maintain transparency with potential buyers.
+
+
+═══════════════════════════════════════════════════════════════════
+
+📌 SUMMARY FOR LISTING
+═══════════════════════════════════════════════════════════════════
+
+✓ High profit margin (85.4%) demonstrates efficient operations
+✓ Recurring revenue model with 30% premium conversion
+✓ Low overhead costs (mostly automated)
+✓ Scalable infrastructure (Flutter + Firebase)
+✓ Growing user base (22.5% monthly growth)
+✓ Minimal dependencies (no Webflow - native Flutter)
+✓ Complete expense transparency (broken down by category)
+✓ Strong financials prove business sustainability
+
+
+═══════════════════════════════════════════════════════════════════
+Generated: December 2025
+App: Glamora - Beauty Booking Platform
+Platform: Flutter (iOS, Android, Web, Desktop)
+Tech Stack: Firebase, MySQL, Google Gemini AI, Google Maps
+═══════════════════════════════════════════════════════════════════

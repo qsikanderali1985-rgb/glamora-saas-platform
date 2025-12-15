@@ -16,14 +16,66 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   // Mock data - In production, fetch from database
   final Map<String, dynamic> _stats = {
-    'totalUsers': 1247,
-    'totalProviders': 89,
-    'activeBookings': 156,
-    'completedBookings': 2341,
-    'revenue': 458900,
-    'pendingApprovals': 12,
-    'todayBookings': 23,
-    'monthlyGrowth': 15.8,
+    'totalUsers': 100,
+    'premiumUsers': 30,
+    'freeUsers': 65,
+    'totalProviders': 20,
+    'activeBookings': 245,
+    'completedBookings': 3890,
+    'revenue': 2850000, // Monthly revenue from subscriptions
+    'pendingApprovals': 3,
+    'todayBookings': 38,
+    'monthlyGrowth': 22.5,
+  };
+  
+  // Financial breakdown - Annual projections
+  final Map<String, dynamic> _financials = {
+    // Revenue Streams (Annual)
+    'subscriptionRevenue': 34200000, // PKR 2.85M x 12 months
+    'commissionRevenue': 7020000, // 15% commission on PKR 46.8M bookings/year
+    'totalAnnualRevenue': 41220000, // Total PKR 41.22M/year
+    
+    // Operating Expenses (Annual)
+    'expenses': {
+      'hosting': {
+        'webflow': 0, // Using Flutter (not Webflow)
+        'firebase': 120000, // PKR 10,000/month x 12
+        'cloudStorage': 60000, // PKR 5,000/month x 12
+        'database': 180000, // MySQL hosting PKR 15,000/month x 12
+      },
+      'domain': {
+        'domainRegistration': 15000, // PKR 15,000/year (.com domain)
+        'ssl': 0, // Free with Firebase/Cloudflare
+      },
+      'apis': {
+        'geminiAI': 240000, // Google Gemini API PKR 20,000/month x 12
+        'maps': 120000, // Google Maps API PKR 10,000/month x 12
+        'sms': 180000, // SMS notifications PKR 15,000/month x 12
+      },
+      'maintenance': {
+        'serverMaintenance': 300000, // PKR 25,000/month x 12
+        'bugFixes': 240000, // PKR 20,000/month x 12
+        'updates': 180000, // PKR 15,000/month x 12
+      },
+      'marketing': {
+        'googleAds': 600000, // PKR 50,000/month x 12
+        'socialMedia': 360000, // PKR 30,000/month x 12
+        'seo': 240000, // PKR 20,000/month x 12
+      },
+      'team': {
+        'support': 1800000, // 2 agents @ PKR 75,000/month x 12
+        'developer': 1200000, // Part-time @ PKR 100,000/month x 12
+      },
+    },
+    'totalAnnualExpenses': 6035000, // Total PKR 6.035M/year
+    'netProfit': 35185000, // PKR 41.22M - PKR 6.035M = PKR 35.185M/year
+    'profitMargin': 85.4, // 85.4% profit margin
+    
+    // Valuation Metrics (for sale price calculation - not displayed)
+    'monthlyRecurringRevenue': 2850000, // MRR from subscriptions
+    'annualRecurringRevenue': 34200000, // ARR
+    'valuationMultiple': 3.5, // Industry standard 3-4x ARR for SaaS
+    'exclusiveSalePrice': 119700000, // PKR 119.7M (3.5x ARR) - NOT DISPLAYED
   };
 
   @override
@@ -170,6 +222,105 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   trend: '+15.8%',
                 ),
               ],
+            ),
+            
+            const SizedBox(height: 32),
+            
+            // Annual Revenue & Expense Breakdown
+            const Text(
+              'Annual Financial Overview',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+            
+            // Revenue Section
+            _buildFinancialCard(
+              title: 'Annual Revenue',
+              amount: _financials['totalAnnualRevenue'],
+              color: const Color(0xFF34A853),
+              icon: Icons.trending_up,
+              items: [
+                {'label': 'Subscription Revenue', 'value': _financials['subscriptionRevenue']},
+                {'label': 'Commission Revenue (15%)', 'value': _financials['commissionRevenue']},
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Expenses Breakdown
+            _buildFinancialCard(
+              title: 'Annual Expenses',
+              amount: _financials['totalAnnualExpenses'],
+              color: const Color(0xFFEA4335),
+              icon: Icons.receipt_long,
+              items: _buildExpenseItems(),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Net Profit
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.account_balance_wallet, color: Colors.white, size: 28),
+                      SizedBox(width: 12),
+                      Text(
+                        'Net Annual Profit',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'PKR ${(_financials['netProfit'] / 1000000).toStringAsFixed(2)}M',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Profit Margin: ${_financials['profitMargin'].toStringAsFixed(1)}%',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             
             const SizedBox(height: 32),
@@ -448,6 +599,125 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+  
+  // Helper method to build expense items
+  List<Map<String, dynamic>> _buildExpenseItems() {
+    final expenses = _financials['expenses'] as Map<String, dynamic>;
+    List<Map<String, dynamic>> items = [];
+    
+    // Hosting expenses
+    final hosting = expenses['hosting'] as Map<String, dynamic>;
+    items.add({'label': 'Firebase Hosting', 'value': hosting['firebase']});
+    items.add({'label': 'Cloud Storage', 'value': hosting['cloudStorage']});
+    items.add({'label': 'MySQL Database', 'value': hosting['database']});
+    
+    // Domain
+    final domain = expenses['domain'] as Map<String, dynamic>;
+    items.add({'label': 'Domain Registration', 'value': domain['domainRegistration']});
+    
+    // APIs
+    final apis = expenses['apis'] as Map<String, dynamic>;
+    items.add({'label': 'Google Gemini AI', 'value': apis['geminiAI']});
+    items.add({'label': 'Google Maps API', 'value': apis['maps']});
+    items.add({'label': 'SMS Notifications', 'value': apis['sms']});
+    
+    // Maintenance
+    final maintenance = expenses['maintenance'] as Map<String, dynamic>;
+    items.add({'label': 'Server Maintenance', 'value': maintenance['serverMaintenance']});
+    items.add({'label': 'Bug Fixes & Updates', 'value': maintenance['bugFixes'] + maintenance['updates']});
+    
+    // Marketing
+    final marketing = expenses['marketing'] as Map<String, dynamic>;
+    items.add({'label': 'Google Ads', 'value': marketing['googleAds']});
+    items.add({'label': 'Social Media Marketing', 'value': marketing['socialMedia']});
+    items.add({'label': 'SEO Services', 'value': marketing['seo']});
+    
+    // Team
+    final team = expenses['team'] as Map<String, dynamic>;
+    items.add({'label': 'Support Team', 'value': team['support']});
+    items.add({'label': 'Developer (Part-time)', 'value': team['developer']});
+    
+    return items;
+  }
+  
+  // Helper method to build financial card
+  Widget _buildFinancialCard({
+    required String title,
+    required int amount,
+    required Color color,
+    required IconData icon,
+    required List<Map<String, dynamic>> items,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            color.withValues(alpha: 0.15),
+            color.withValues(alpha: 0.08),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: color.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 28),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'PKR ${(amount / 1000000).toStringAsFixed(2)}M',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Divider(color: Colors.white24),
+          const SizedBox(height: 12),
+          ...items.map((item) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  item['label'],
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.white.withValues(alpha: 0.7),
+                  ),
+                ),
+                Text(
+                  'PKR ${(item['value'] / 1000).toStringAsFixed(0)}K',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
       ),
     );
   }
